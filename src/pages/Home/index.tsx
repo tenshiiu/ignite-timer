@@ -22,7 +22,9 @@ interface Cycle {
   task: string,
   minutesAmount: number,
   startDate: Date,
-  InterruptedDate?: Date,
+  interruptedDate?: Date,
+  finishedDate?: Date,
+
 }
 
 export function Home() {
@@ -40,19 +42,44 @@ export function Home() {
 
   const activeCycle = cycles.find(cycle => cycle.id == activeCycleId);
 
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0;
+
+  const minutesAmount = Math.floor(currentSeconds / 60);
+  const secondsAmount = currentSeconds % 60;
+
+  const minutes = String(minutesAmount).padStart(2, '0');
+  const seconds = String(secondsAmount).padStart(2, '0');
+
   useEffect(() => {
     let interval: number;
 
     if (activeCycle) {
-      const interval = setInterval(() => {
-        setamountSecondsPassed(differenceInSeconds(new Date(), activeCycle.startDate),
-       )
+      interval = setInterval(() => {
+        let secondsDifference = differenceInSeconds(new Date(), activeCycle.startDate)
+
+        if (secondsDifference += totalSeconds) {
+          setCycles(state => state.map((cycle) => {
+            if (cycle.id == activeCycleId) {
+              return {...cycle, finishedDate: new Date()}
+            } else {
+              return cycle
+            }
+          }),
+        )
+
+        clearInterval(interval)
+        } else {
+          setamountSecondsPassed(secondsDifference)
+        }
+
+
       }, 1000)
     }
     return () => {
       clearInterval(interval);
     }
-  }, [activeCycle])
+  }, [activeCycle, totalSeconds])
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     const id = String(new Date().getTime());
@@ -72,25 +99,16 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
-    setActiveCycleId(null)
-
-    setCycles(cycles.map(cycle => {
+    setCycles((state) =>
+      state.map(cycle => {
       if (cycle.id == activeCycleId) {
-        return { ...cycle, InterruptedDate: new Date() }
+        return { ...cycle, interruptedDate: new Date() }
       } else {
         return cycle
       }
     }))
+    setActiveCycleId(null)
   }
-
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
-  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0;
-
-  const minutesAmount = Math.floor(currentSeconds / 60);
-  const secondsAmount = currentSeconds % 60;
-
-  const minutes = String(minutesAmount).padStart(2, '0');
-  const seconds = String(secondsAmount).padStart(2, '0');
 
   useEffect(() => {
     if (activeCycle) {
