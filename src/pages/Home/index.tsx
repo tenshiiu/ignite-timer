@@ -59,19 +59,23 @@ export function Home() {
 
     if (activeCycle) {
       interval = setInterval(() => {
-        let secondsDifference = differenceInSeconds(new Date(), activeCycle.startDate)
+        const secondsDifference = differenceInSeconds(
+          new Date(), 
+          activeCycle.startDate,
+        )
 
-        if (secondsDifference += totalSeconds) {
-          setCycles(state => state.map((cycle) => {
+        if (secondsDifference > totalSeconds) {
+          setCycles(state => 
+            state.map((cycle) => {
             if (cycle.id == activeCycleId) {
-              return {...cycle, finishedDate: new Date()}
+              return {...cycle, finishedDate: new Date() }
             } else {
               return cycle
             }
           }),
         )
 
-        clearInterval(interval)
+         clearInterval(interval)
         } else {
           setamountSecondsPassed(secondsDifference)
         }
