@@ -1,12 +1,15 @@
+//Importações
 import { HandPalm, Play } from "phosphor-react";
 import { CountdownContainer, FormContainer, HomeContainer, Separator, StartCountdownButton, TaskInput, MinutesAmountInput, StopCountdownButton } from "./styles";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { differenceInSeconds } from 'date-fns';
-
+//Importações Hooks
 import { useEffect, useState } from "react";
 
+
+// Validação do formulário do ciclo
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, "informe a tarefa"),
   minutesAmount: zod
@@ -15,7 +18,7 @@ const newCycleFormValidationSchema = zod.object({
   .max(60, "O ciclo precisa ser de no máximo 60 minutos"),
 })
 
-type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema> 
 
 interface Cycle {
   id: string,
@@ -36,7 +39,7 @@ export function Home() {
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
       task: '',
-      MinutesAmount: 0
+      minutesAmount: 0
     }
   });
 
